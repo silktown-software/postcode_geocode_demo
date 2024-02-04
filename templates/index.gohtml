@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Silktown Software | Postcode Geocode lookup demo</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+    <div class="container">
+        <h1>Postcode Geocode lookup</h1>
+
+        <p>Basic location lookup via the postcode.</p>
+
+        <div class="postalcode-form-container">
+            <form id="postalcode-form" name="postalcode-form" >
+                <label class="sr-only" for="postalcode-input">Enter postcode:</label>
+                <input type="text" class="postalcode-input" id="postalcode-input" name="postalcode" placeholder="Postcode" autocomplete="off" />
+                <button type="submit" disabled>Show location</button>
+                <button type="reset" disabled>Reset</button>
+            </form>
+        </div>
+
+        <div class="mapbox-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+    <script src="/static/app.js" type="module"></script>
+</body>
+</html>

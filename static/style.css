@@ -1,0 +1,73 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+@media only screen and (prefers-color-scheme: dark) {
+    body {
+        background-color: #232425;
+        color: #fff;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .container {
+
+        margin: 0 auto;
+        max-width: 1024px;
+
+        width: 66%;
+    }
+}
+
+/* add a utility class to hide elements for a screen reader */
+.sr-only {
+    display: none;
+}
+
+/* start basic form styling */
+button, input[type='text'] {
+    border: 0 none;
+    border-radius: 2px;
+    font-size: 16px;
+}
+
+button {
+    color: #FFF;
+    padding: 10px;
+}
+
+button[type='reset'] {
+    background-color: #e7e7e7;
+    color: #000;
+}
+
+button[type='submit'] {
+    background-color: #04AA6D;
+    color: #FFF;
+}
+
+input[type='text'] {
+    border: 1px solid #232425;
+    padding: 9px 10px;
+}
+/* end form styling */
+
+/* postcode form styling */
+.postalcode-input {
+    width: 130px;
+}
+
+.postalcode-form-container {
+    margin-bottom: 1em;
+}
+/* end postcode form styling */
+
+#map {
+    width: 100%;
+    height: 50vh;
+}
