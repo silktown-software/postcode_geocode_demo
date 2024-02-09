@@ -67,6 +67,14 @@ func TestRepository_Migrate(t *testing.T) {
 	assert.Equal(t, tableName, "postcode")
 }
 
+func cleanUp(t *testing.T) {
+	_, err := db.Exec(`DELETE FROM postcode`)
+
+	if err != nil {
+		assert.FailNow(t, "could not truncate postcode table")
+	}
+}
+
 func TestSqlitePostCodeRepository_Get(t *testing.T) {
 	err := repo.Migrate()
 
@@ -138,43 +146,61 @@ func TestSqlitePostCodeRepository_Get(t *testing.T) {
 			assert.Equal(t, entity, c.entity)
 		})
 	}
+
+	cleanUp(t)
 }
 
 func TestSqlitePostCodeRepository_Insert(t *testing.T) {
-	//err := repo.Migrate()
-	//
-	//if err != nil {
-	//	assert.FailNow(t, "could not migrate db", err)
-	//}
-	//
-	//stmt, err := db.Prepare("INSERT INTO postcode VALUES (?, ?, ?)")
-	//
-	//if err != nil {
-	//	assert.FailNow(t, "could not prepare insert statement", err)
-	//}
-	//
-	//_, err = stmt.Exec("AB10 1AB", 0, 0)
-	//
-	//if err != nil {
-	//	assert.FailNow(t, "could not execute insert: %s", err)
-	//}
-	//
-	//cases := []struct {
-	//	name   string
-	//	entity database.PostCodeEntity
-	//	error  error
-	//}{
-	//	{},
-	//	{},
-	//}
-	//
-	//for _, c := range cases {
-	//	t.Run(c.name, func(t *testing.T) {
-	//
-	//	})
-	//}
-}
+	err := repo.Migrate()
 
-func TestSqlitePostCodeRepository_InsertMany(t *testing.T) {
+	if err != nil {
+		assert.FailNow(t, "could not migrate db", err)
+	}
 
+	stmt, err := db.Prepare("INSERT INTO postcode VALUES (?, ?, ?)")
+
+	if err != nil {
+		assert.FailNow(t, "could not prepare insert statement", err)
+	}
+
+	_, err = stmt.Exec("AB10 1AB", 0, 0)
+
+	if err != nil {
+		assert.FailNow(t, "could not execute insert: %s", err)
+	}
+
+	cases := []struct {
+		name   string
+		entity database.PostCodeEntity
+		error  error
+	}{
+		{
+			name: "insert new record into the database",
+			entity: database.PostCodeEntity{
+				Postcode: "ZZ99 9ZZ",
+				Lat:      0,
+				Lng:      0,
+			},
+			error: nil,
+		},
+		{
+			name: "insert existing postcode record should no return error",
+			entity: database.PostCodeEntity{
+				Postcode: "AB10 1AB",
+				Lat:      0.00,
+				Lng:      0.00,
+			},
+			error: nil,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := repo.Upsert(c.entity)
+
+			assert.ErrorIs(t, c.error, err)
+		})
+	}
+
+	cleanUp(t)
 }

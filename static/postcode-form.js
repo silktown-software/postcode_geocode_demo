@@ -68,7 +68,7 @@ export class PostcodeForm {
 
     /**
      * Form submit handler
-     * @param evt - form submit event
+     * @param evt
      */
     #submitHandler(evt) {
         evt.preventDefault();

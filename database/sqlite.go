@@ -8,16 +8,19 @@ import (
 
 const sqliteMaxVariables = 999
 
+// SqlitePostCodeRepository represents an Postcode repository for SQLite
 type SqlitePostCodeRepository struct {
 	db *sql.DB
 }
 
+// NewSqlitePostCodeRepository creates a new PostCodeRepository that will work with SQLite.
 func NewSqlitePostCodeRepository(db *sql.DB) (PostCodeRepository, error) {
 	return SqlitePostCodeRepository{
 		db: db,
 	}, nil
 }
 
+// Migrate this creates the database tables and adds an index to the postcode column
 func (r SqlitePostCodeRepository) Migrate() error {
 	const create string = `
 		CREATE TABLE IF NOT EXISTS postcode (
@@ -38,6 +41,9 @@ func (r SqlitePostCodeRepository) Migrate() error {
 	return nil
 }
 
+// Get this retrieves a PostcodeEntity when supplied postcode that exists in the database.
+// If it does not find the post code it will return the entity as nil.
+// This method will return ErrEmptyPostCode if the postcode is empty.
 func (r SqlitePostCodeRepository) Get(postcode string) (*PostCodeEntity, error) {
 	if postcode == "" {
 		return nil, ErrEmptyPostcode
@@ -75,8 +81,9 @@ func (r SqlitePostCodeRepository) Get(postcode string) (*PostCodeEntity, error) 
 	return &PostCodeEntity{Postcode: postcode, Lat: lat, Lng: lng}, nil
 }
 
-func (r SqlitePostCodeRepository) Insert(entity PostCodeEntity) error {
-	stmt, err := r.db.Prepare("INSERT INTO postcode VALUES (?, ?, ?)")
+// Upsert this takes a singular postcode entity and updates the row if the postcode is already present in the database
+func (r SqlitePostCodeRepository) Upsert(entity PostCodeEntity) error {
+	stmt, err := r.db.Prepare(`INSERT INTO postcode VALUES (?, ?, ?) ON CONFLICT (postcode) DO UPDATE SET lng=excluded.lng, lat=excluded.lat`)
 
 	defer func(stmt *sql.Stmt) {
 		err = stmt.Close()
@@ -91,7 +98,12 @@ func (r SqlitePostCodeRepository) Insert(entity PostCodeEntity) error {
 	return err
 }
 
-func (r SqlitePostCodeRepository) InsertMany(postcodes []PostCodeEntity) error {
+// UpsertMany this takes a slice of postcode entities and batch inserts them into the SQLite database.
+// If there is a conflict on the UNIQUE constraint we UPDATE the row with the new lat and lng.
+//
+// SQLite has a max number of variable of 999 so if the length of the slice is longer than 999, therefore we want to
+// batch the slices update/insert the rows
+func (r SqlitePostCodeRepository) UpsertMany(postcodes []PostCodeEntity) error {
 	var valueStrings []string
 	var valueArgs []interface{}
 
@@ -125,7 +137,7 @@ func (r SqlitePostCodeRepository) InsertMany(postcodes []PostCodeEntity) error {
 }
 
 func (r SqlitePostCodeRepository) batchInsert(valueStrings []string, valueArgs []interface{}) error {
-	sqlStmt := `INSERT INTO postcode (postcode, lng, lat) VALUES %s`
+	sqlStmt := `INSERT INTO postcode (postcode, lng, lat) VALUES %s ON CONFLICT (postcode) DO UPDATE SET lng=excluded.lng, lat=excluded.lat`
 
 	sqlStmt = fmt.Sprintf(sqlStmt, strings.Join(valueStrings, ","))
 

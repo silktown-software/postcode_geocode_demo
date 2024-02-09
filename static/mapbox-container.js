@@ -38,11 +38,17 @@ export class MapboxContainer {
         });
     }
 
+    /**
+     * Binds our map events
+     */
     bind() {
-        this.eventEmitter.on('ON_RETRIEVE_POSTCODE_LOCATION', (data) => this.#handleUserLocation(data));
+        this.eventEmitter.on('ON_RETRIEVE_POSTCODE_LOCATION', (data) => this.#updateMapLocation(data));
         this.eventEmitter.on("ON_USER_RESET_MAP", () => this.#resetMap())
     }
 
+    /**
+     * Resets the map back to the default view when first loaded
+     */
     #resetMap() {
         if (!this.marker) {
             return;
@@ -54,7 +60,11 @@ export class MapboxContainer {
         this.map.setCenter([ukDefaultLatLng.lng, ukDefaultLatLng.lat]);
     }
 
-    #handleUserLocation(data) {
+    /**
+     * Sets the map location based on the lng/lat provided
+     * @param data the postcode location
+     */
+    #updateMapLocation(data) {
         const { lat, lng } = data;
 
         /* set the map centre and zoom in*/

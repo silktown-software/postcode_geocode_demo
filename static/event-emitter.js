@@ -43,7 +43,7 @@ export class EventEmitter {
      */
     fire(eventName, data = null) {
         if (!eventName) {
-            throw new Error('eventname is undefined');
+            throw new Error('eventName is undefined');
         }
 
         const funcs = this.funcMap[eventName];

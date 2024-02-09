@@ -1,6 +1,6 @@
 # Postcode Geocode Demo
 
-A simple go demo web-application for to lookup a UK postcode from a database and mark the location on the map.
+A simple go demo web-application for to look up a UK postcode from a database and mark the location on the map.
 
 # Dependencies
 
@@ -15,9 +15,9 @@ The CSV files will have 3 columns, and they should **not** have a header.
 
 i.e.
 
-|Postcode| Lat |Lng
-|-----|-----|----|
-|ZZ99 9ZZ| 0   | 0
+| Postcode  | Lat  | Lng |
+|-----------|------|-----|
+| ZZ99 9ZZ  | 0    | 0   |
 
 This data can be obtained by using the postcode coordinate converter for the Ordnance Survey Codepoint Open dataset:
 
@@ -42,6 +42,23 @@ If you run the importer in the root of the source directory:
 $ ./dist/importer/postcode-importer -directory=<directory with CSV files>
 ```
 
+You can verify if the importer has worked correctly by comparing the total count of lines in the CSV file with the total row count in the `postcode` table: 
+
+```bash
+$ find . -name '*.csv' -type f -exec cat {} + | wc -l
+1736857
+```
+
+If you connect to the sqlite database:
+
+```bash
+$ sqlite3 postcodes.db 
+SQLite version 3.40.1 2022-12-28 14:03:47
+Enter ".help" for usage hints.
+sqlite> select count(*) from postcode;
+1736857
+```
+
 ## Running the demo web-application
 
 ```bash
@@ -50,13 +67,14 @@ $ go run cmd/demo/main.go
 
 By default, it will run on PORT 5000. You can specify an alternative port via an environment variable.
 
-It will expect the `postcodes.db` file to be in the root of the repository if running it via `go run cmd/demo/main.go`
+It will expect the `postcodes.db` file to be in the root of the repository if running it via `go run cmd/demo/main.go`.
 
 ## TODO:
 
-* Split importer into separate package
-* Handle 404/500 errors properly on the frontend
-* Change Lat/Lng column order so it is Lng/Lat
+* Split the importer logic into separate package.
+* 
+* Change Lat/Lng column order, so it is Lng/Lat. Lng/Lat is the preferred order.
+* Write batch insert test.
 
 
 

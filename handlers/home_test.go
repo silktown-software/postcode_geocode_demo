@@ -48,11 +48,11 @@ func (r stubRepo) Get(postcode string) (*database.PostCodeEntity, error) {
 	return nil, nil
 }
 
-func (r stubRepo) Insert(entity database.PostCodeEntity) error {
+func (r stubRepo) Upsert(entity database.PostCodeEntity) error {
 	return nil
 }
 
-func (r stubRepo) InsertMany(postcodes []database.PostCodeEntity) error {
+func (r stubRepo) UpsertMany(postcodes []database.PostCodeEntity) error {
 	return nil
 }
 

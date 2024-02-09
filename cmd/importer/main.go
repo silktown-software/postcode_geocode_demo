@@ -98,19 +98,19 @@ func processCSVFile(repo database.PostCodeRepository, match string) error {
 		}
 
 		if err != nil {
-			return fmt.Errorf("error while reading csv file: %s", err)
+			return fmt.Errorf("error while reading csv file: %w", err)
 		}
 
 		lat, err := strconv.ParseFloat(rec[1], 64)
 
 		if err != nil {
-			return fmt.Errorf("could not convert latitude on record: %#v", rec)
+			return fmt.Errorf("could not convert latitude on postcode: %w", err)
 		}
 
 		lng, err := strconv.ParseFloat(rec[2], 64)
 
 		if err != nil {
-			return fmt.Errorf("could not convert longitude on record: %#v", rec)
+			return fmt.Errorf("could not convert longitude on record: %w", err)
 		}
 
 		ent := database.PostCodeEntity{
@@ -124,7 +124,7 @@ func processCSVFile(repo database.PostCodeRepository, match string) error {
 
 	log.Printf("bulk inserting: %s", match)
 
-	err = repo.InsertMany(postcodes)
+	err = repo.UpsertMany(postcodes)
 
 	if err != nil {
 		return fmt.Errorf("error processing file: %s, error: %w", match, err)

@@ -1,2 +1,4 @@
 postcodes.db
+
+# exclude build directory
 dist/
