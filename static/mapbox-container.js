@@ -39,7 +39,7 @@ export class MapboxContainer {
     }
 
     bind() {
-        this.eventEmitter.on('ON_RETRIEVE_USER_LOCATION', (data) => this.#handleUserLocation(data));
+        this.eventEmitter.on('ON_RETRIEVE_POSTCODE_LOCATION', (data) => this.#handleUserLocation(data));
         this.eventEmitter.on("ON_USER_RESET_MAP", () => this.#resetMap())
     }
 

@@ -19,21 +19,31 @@ export class PostcodeForm {
         this.eventEmitter = eventEmitter;
     }
 
+    /**
+     * Initialises form DOM elements
+     */
     init() {
         this.postcodeTextBox = this.form.postalcode;
-        this.submitButton = this.form.querySelector("button[type='submit']");
-        this.resetButton = this.form.querySelector("button[type='reset']");
+        this.submitButton = this.form.querySelector('button[type="submit"]');
+        this.resetButton = this.form.querySelector('button[type="reset"]');
+        this.errorMessage = this.form.querySelector('.error-message');
     }
 
     /**
-     * Binds the postcode form
+     * Binds the form elements and events
      */
     bind() {
-        this.form.addEventListener("submit", (evt) => this.#submitHandler(evt));
-        this.postcodeTextBox.addEventListener("keyup", (evt) => this.#handlePostCodeKeyUp(evt));
-        this.resetButton.addEventListener("click", (evt) => this.#handleReset(evt));
+        this.form.addEventListener('submit', (evt) => this.#submitHandler(evt));
+        this.postcodeTextBox.addEventListener('keyup', (evt) => this.#handlePostCodeKeyUp(evt));
+        this.resetButton.addEventListener('click', (evt) => this.#handleReset(evt));
+
+        this.eventEmitter.on('ON_RETRIEVE_POSTCODE_LOCATION', () => this.#hideErrorMessage());
     }
 
+    /**
+     * Handles the form reset.
+     * @param evt
+     */
     #handleReset(evt) {
         evt.preventDefault();
 
@@ -41,10 +51,12 @@ export class PostcodeForm {
         this.postcodeTextBox.value = '';
         this.resetButton.disabled = 'disabled';
         this.submitButton.disabled = 'disabled'
+        this.errorMessage.innerText = ''
+        this.errorMessage.style.display = 'none';
     }
 
     /**
-     *
+     * Handles the postcode key up event
      * @param evt
      */
     #handlePostCodeKeyUp(evt) {
@@ -64,8 +76,26 @@ export class PostcodeForm {
         const postcode = evt.target['postalcode'].value;
 
         this.#fetchPostcode(postcode)
-            .then((data) => this.eventEmitter.fire('ON_RETRIEVE_USER_LOCATION', data))
-            .catch((err) => this.eventEmitter.fire('ON_RETRIEVE_USER_LOCATION_ERROR', err));
+            .then((data) => this.eventEmitter.fire('ON_RETRIEVE_POSTCODE_LOCATION', data))
+            .catch((err) => this.#showErrorMessage(err));
+    }
+
+    /**
+     * Hides the error message
+     */
+    #hideErrorMessage() {
+        this.errorMessage.style.display = 'none';
+    }
+
+    /**
+     * Handles an error when fetching the postcode.
+     * We simply show the error message
+     *
+     * @param error
+     */
+    #showErrorMessage(error) {
+        this.errorMessage.innerText = error.message;
+        this.errorMessage.style.display = 'block';
     }
 
     /**

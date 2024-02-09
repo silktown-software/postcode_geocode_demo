@@ -16,10 +16,8 @@ body {
 
 @media only screen and (min-width: 992px) {
     .container {
-
         margin: 0 auto;
         max-width: 1024px;
-
         width: 66%;
     }
 }
@@ -39,6 +37,11 @@ button, input[type='text'] {
 button {
     color: #FFF;
     padding: 10px;
+}
+
+button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 button[type='reset'] {
@@ -70,4 +73,11 @@ input[type='text'] {
 #map {
     width: 100%;
     height: 50vh;
+}
+
+.error-message {
+    background-color: #f44336;
+    border-radius: 2px;
+    display: none;
+    padding: 10px;
 }
