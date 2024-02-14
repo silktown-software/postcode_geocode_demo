@@ -34,7 +34,7 @@ func main() {
 	}
 
 	if !dir.IsDir() {
-		log.Fatalf("path specified is not a directory")
+		log.Fatalf("path specified is not a directory: %s", path)
 	}
 
 	pattern := filepath.Join(path, "*.csv")

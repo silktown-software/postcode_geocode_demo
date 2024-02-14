@@ -55,6 +55,8 @@ func main() {
 
 	addr := fmt.Sprintf(":%d", port)
 
+	log.Printf("listening on :%d", port)
+
 	err = http.ListenAndServe(addr, nil)
 
 	if errors.Is(err, http.ErrServerClosed) {
