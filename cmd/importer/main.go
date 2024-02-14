@@ -76,10 +76,7 @@ func processCSVFile(repo database.PostCodeRepository, match string) error {
 	f, err := os.Open(match)
 
 	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			log.Fatalf("cannot close file: %s", err)
-		}
+		err = f.Close()
 	}(f)
 
 	if err != nil {
