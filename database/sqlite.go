@@ -8,7 +8,7 @@ import (
 
 const sqliteMaxVariables = 999
 
-// SqlitePostCodeRepository represents an Postcode repository for SQLite
+// SqlitePostCodeRepository represents a Postcode repository for SQLite
 type SqlitePostCodeRepository struct {
 	db *sql.DB
 }
@@ -29,9 +29,7 @@ func (r SqlitePostCodeRepository) Migrate() error {
 			lat REAL
 		);
 		
-		DROP INDEX IF EXISTS idx_postcode;
-		
-		CREATE UNIQUE INDEX idx_postcode ON postcode (postcode);
+		CREATE UNIQUE INDEX IF NOT EXISTS idx_postcode_postcode ON postcode (postcode);
 	`
 
 	if _, err := r.db.Exec(create); err != nil {
