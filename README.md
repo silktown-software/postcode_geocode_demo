@@ -72,7 +72,6 @@ It will expect the `postcodes.db` file to be in the root of the repository if ru
 ## TODO:
 
 * Split the importer logic into separate package.
-* 
 * Change Lat/Lng column order, so it is Lng/Lat. Lng/Lat is the preferred order.
 * Write batch insert test.
 
